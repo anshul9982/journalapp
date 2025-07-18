@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 
 @RestController
@@ -32,6 +36,11 @@ public class JournalEntryController {
     @DeleteMapping("id/{myId}")
     public JournalEntry deleteEntryById(@PathVariable Long myId){
         return journalEntries.remove(myId);
+    }
+
+    @PutMapping("id/{id}")
+    public JournalEntry updateEntry(@PathVariable Long id, @RequestBody JournalEntry myEntry){
+        return journalEntries.put(id, myEntry);
     }
     
 

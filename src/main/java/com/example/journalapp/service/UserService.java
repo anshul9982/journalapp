@@ -1,0 +1,38 @@
+package com.example.journalapp.service;
+
+import com.example.journalapp.entity.User;
+import com.example.journalapp.repository.UserRepository;
+
+import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import java.util.List;
+import java.util.Optional;
+
+@Slf4j
+@Component
+public class UserService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    public void saveUser(User user){
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            log.error("exception :", e);
+        }
+    }
+
+    public List<User> getAll(){
+        return userRepository.findAll();
+    }
+
+    public User findByUsername(String userName){
+        return userRepository.findByUserName(userName);
+    }
+
+    public void deleteById(ObjectId id){userRepository.deleteById(id);}
+
+}

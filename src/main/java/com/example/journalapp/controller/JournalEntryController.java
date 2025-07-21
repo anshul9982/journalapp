@@ -1,6 +1,5 @@
 package com.example.journalapp.controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -20,7 +19,7 @@ import com.example.journalapp.entity.JournalEntry;
 import com.example.journalapp.service.JournalEntryService;
 @RestController
 @RequestMapping("/journal")
-public class JournalEntryControllerV2 {
+public class JournalEntryController {
     @Autowired
     JournalEntryService journalEntryService;
     @GetMapping
@@ -33,7 +32,6 @@ public class JournalEntryControllerV2 {
     @PostMapping
     public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry myEntry){
         try {
-            myEntry.setDate(LocalDateTime.now());
             journalEntryService.saveEntry(myEntry);
             return new ResponseEntity<>(myEntry, HttpStatus.CREATED);
         } catch (Exception e) {

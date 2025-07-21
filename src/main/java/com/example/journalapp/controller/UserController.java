@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,34 +24,31 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers(){
         List<User> allUsers = userService.getAll();
-            if (allUsers!=null && !allUsers.isEmpty()){
-                return new ResponseEntity<>(allUsers, HttpStatus.OK);
-            }
-            else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } 
+        return new ResponseEntity<>(allUsers, HttpStatus.OK);
+    }
     @PostMapping    
-    public ResponseEntity<User> addNewUser(@RequestBody User newUser){
+    public ResponseEntity<?> addNewUser(@RequestBody User newUser){
+        if (userService.findByUsername(newUser.getUserName()) != null) {
+            return new ResponseEntity<>("Username already exists.", HttpStatus.CONFLICT);
+        }
         try {
             userService.saveUser(newUser);
             return new ResponseEntity<>(newUser, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Failed to create user due to an internal error.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping
-    public ResponseEntity<User>findByUserName(@RequestBody String username){
-        return null;
-    }
-
-    @PutMapping
-    public ResponseEntity<?> updateUser(@RequestBody User user){
-        User userInDB = userService.findByUsername(user.getUserName());
-        if (userInDB!=null) {
-            userInDB.setUserName(user.getUserName()!=null && !user.getUserName().equals("")?user.getUserName():userInDB.getUserName());
-            userInDB.setPassword(user.getPassword()!=null && !user.getPassword().equals("")?user.getPassword():userInDB.getPassword());
+    @PutMapping("/{username}")
+    public ResponseEntity<?> updateUser(@PathVariable String username, @RequestBody User user){
+        User userInDB = userService.findByUsername(username);
+        if (userInDB != null) {
+            //userInDB.setUserName(user.getUserName());
+            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+                userInDB.setPassword(user.getPassword());
+            }
             userService.saveUser(userInDB);
             return new ResponseEntity<>(userInDB, HttpStatus.OK);
-        }else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        
-    } 
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }

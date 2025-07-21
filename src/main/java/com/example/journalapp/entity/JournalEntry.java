@@ -1,5 +1,7 @@
 package com.example.journalapp.entity;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -9,8 +11,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.mongodb.lang.NonNull;
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 
 @Document(collection="journal_entries")
 public class JournalEntry {

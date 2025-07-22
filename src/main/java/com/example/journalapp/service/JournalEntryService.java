@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.journalapp.entity.JournalEntry;
 import com.example.journalapp.entity.User;
@@ -20,7 +21,7 @@ public class JournalEntryService {
     private JournalEntryRepository journalEntryRepository;
     @Autowired
     private UserService userService;
-
+    @Transactional
     public void saveEntry(JournalEntry journalEntry, String userName){
         try {
             User user = userService.findByUsername(userName);
@@ -30,6 +31,7 @@ public class JournalEntryService {
             userService.saveUser(user);
         } catch (Exception e) {
             log.error("exception :", e);
+            throw new RuntimeException("an error occured suring saving entry", e);
         }
     }
 

@@ -31,7 +31,7 @@ public class JournalEntryController {
         User user = userService.findByUsername(userName);
         List<JournalEntry> all = user.getJournalEntries();
         if (all!=null && !all.isEmpty()){
-            return new ResponseEntity<>(all, HttpStatus.OK);
+            return new ResponseEntity<>(all ,HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -44,6 +44,8 @@ public class JournalEntryController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    
     @GetMapping("id/{myId}")
     public ResponseEntity<JournalEntry> getJournalById(@PathVariable ObjectId myId) {
         return journalEntryService.findById(myId)

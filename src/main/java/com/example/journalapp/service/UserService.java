@@ -1,12 +1,14 @@
 package com.example.journalapp.service;
 
 import com.example.journalapp.entity.User;
+import com.example.journalapp.repository.JournalEntryRepository;
 import com.example.journalapp.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +18,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JournalEntryRepository journalEntryRepository;
 
     public void saveUser(User user){
         try {
@@ -34,5 +39,16 @@ public class UserService {
     }
 
     public void deleteById(ObjectId id){userRepository.deleteById(id);}
+
+    
+//    public boolean deleteByUsername(String username) {
+//        User user = userRepository.findByUserName(username);
+//        if (user != null) {
+//            journalEntryRepository.deleteAll(user.getJournalEntries());
+//            userRepository.delete(user);
+//            return true;
+//        }
+//        return false;
+//    }
 
 }

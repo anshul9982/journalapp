@@ -2,6 +2,7 @@ package com.example.journalapp.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,13 +79,17 @@ public class JournalEntryController {
 
     @PutMapping("id/{id}")
     public ResponseEntity<?> updateEntry(@PathVariable ObjectId id, @RequestBody JournalEntry newEntry){
-        
-        JournalEntry old = journalEntryService.findById(id).orElse(null);
-        if(old!=null){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+        User user = userService.findByUsername(userName);
+        Optional<JournalEntry> collect = user.getJournalEntries().stream().filter(x->x.getId().equals(id)).findFirst();
+        if (!collect.isEmpty()) {
+            JournalEntry old = collect.get();
             old.setTitle(newEntry.getTitle()!=null && !newEntry.getTitle().equals("")?newEntry.getTitle():old.getTitle());
             old.setContent(newEntry.getContent()!=null && !newEntry.getContent().equals("")?newEntry.getContent():old.getContent());
             journalEntryService.saveEntry(old);
             return new ResponseEntity<>(old, HttpStatus.OK);
+        
         }else{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

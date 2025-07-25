@@ -28,11 +28,6 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers(){
-        List<User> allUsers = userService.getAll();
-        return new ResponseEntity<>(allUsers, HttpStatus.OK);
-    }
     @PutMapping()
     public ResponseEntity<?> updateUser(@RequestBody User user){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

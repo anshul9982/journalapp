@@ -4,16 +4,16 @@ import com.example.journalapp.entity.User;
 import com.example.journalapp.repository.JournalEntryRepository;
 import com.example.journalapp.repository.UserRepository;
 
+import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -33,13 +33,21 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void saveAdmin(User user){
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Arrays.asList("ADMIN", "USER"));
+        userRepository.save(user);
+    }
+
     // This method is for general-purpose saving of a user object, e.g., for updates.
     public void saveUser(User user) {
         userRepository.save(user);
     }
 
-    public List<User> getAll(){
-        return userRepository.findAll();
+    public List<String> getAll(){
+        List<String> names = userRepository.findAll().stream().map(x->x.getUserName()).collect(Collectors.toList());
+        return names;
+        //return userRepository.findAll();
     }
 
     public User findByUsername(String userName){

@@ -48,9 +48,24 @@ public class AdminController {
                 user.setRoles(roles);
                 userService.saveUser(user);
             }
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            return new ResponseEntity<>(user.getUserName(), HttpStatus.OK);
         }
         return new ResponseEntity<>("User not found.", HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/remove-admin/{userName}")
+    public ResponseEntity<?> removeAdmin(@PathVariable String userName){
+        User user = userService.findByUsername(userName);
+        if(user!=null){
+            List<String> roles = new ArrayList<>(user.getRoles());
+            if (!roles.isEmpty()){
+                roles.remove("ADMIN");
+                user.setRoles(roles);
+                userService.saveUser(user);
+            }
+            return new ResponseEntity<>(user.getUserName() + " Admin status revoked", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
     }
 
 }

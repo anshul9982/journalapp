@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,14 +21,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.journalapp.entity.JournalEntry;
+import com.example.journalapp.entity.Quotes;
 import com.example.journalapp.entity.User;
 import com.example.journalapp.service.JournalEntryService;
+import com.example.journalapp.service.QuoteService;
 import com.example.journalapp.service.UserService;
+@Slf4j
 @RestController
 @RequestMapping("/journal")
 public class JournalEntryController {
     @Autowired
     UserService userService;
+    @Autowired
+    QuoteService quoteService;
     @Autowired
     JournalEntryService journalEntryService;
     @GetMapping()
@@ -49,8 +55,18 @@ public class JournalEntryController {
             journalEntryService.saveEntry(myEntry, userName);
             return new ResponseEntity<>(myEntry, HttpStatus.CREATED);
         } catch (Exception e) {
+            log.error("error creating entry", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/quote")
+    public ResponseEntity<?> getQuote(){
+        Quotes quote = quoteService.getRandomQuotes();
+        if (quote!=null) {
+            return new ResponseEntity<>(quote, HttpStatus.OK);
+        }
+        return new ResponseEntity<>("COULD NOT FETCH A QUOTE ", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     

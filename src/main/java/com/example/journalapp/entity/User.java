@@ -27,6 +27,9 @@ public class User {
     @NonNull
     private String userName;
 
+    private String email;
+    private boolean sentimentAnalysis;
+
     @NonNull
     private String password;
 

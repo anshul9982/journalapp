@@ -62,7 +62,7 @@ public class JournalEntryController {
 
     @GetMapping("/quote")
     public ResponseEntity<?> getQuote(){
-        Quotes quote = quoteService.getRandomQuotes();
+        Quotes quote = quoteService.getRandomQuote();
         if (quote!=null) {
             return new ResponseEntity<>(quote, HttpStatus.OK);
         }

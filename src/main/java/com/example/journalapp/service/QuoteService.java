@@ -9,9 +9,11 @@ import com.example.journalapp.entity.Quotes;
 public class QuoteService {
     @Autowired
     private RestTemplate restTemplate;
-    private final String url = "https://zenquotes.io/api/random";
+    @Autowired
+    private AppCache appCache;
 
-    public Quotes getRandomQuotes(){
+    public Quotes getRandomQuote(){
+        String url = appCache.getKey("zenQuoteApiUrl");
         Quotes[] quotes = restTemplate.getForObject(url, Quotes[].class);
         return quotes != null? quotes[0] : null;
     }

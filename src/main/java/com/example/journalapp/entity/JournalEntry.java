@@ -10,6 +10,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.example.journalapp.Enum.Sentiment;
 import com.mongodb.lang.NonNull;
 @Data
 @NoArgsConstructor
@@ -20,6 +21,7 @@ public class JournalEntry {
     private ObjectId id;
     @NonNull
     private String title;
+    private Sentiment sentiment;
     private String content;
     private LocalDateTime date;
 }

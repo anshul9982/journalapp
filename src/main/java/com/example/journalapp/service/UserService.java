@@ -3,8 +3,6 @@ package com.example.journalapp.service;
 import com.example.journalapp.entity.User;
 import com.example.journalapp.repository.JournalEntryRepository;
 import com.example.journalapp.repository.UserRepository;
-
-import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;

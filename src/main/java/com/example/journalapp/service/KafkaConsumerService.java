@@ -13,7 +13,6 @@ public class KafkaConsumerService {
     @KafkaListener(topics = "journal-entry-events", groupId = "journal-app-group")
     public void consume(JournalEntry journalEntry) {
         logger.info(String.format("Consumed journal entry event <- %s", journalEntry.getId()));
-        // TODO: Add logic here to process the consumed message.
         // For example: trigger sentiment analysis, send notifications, update analytics, etc.
     }
 }

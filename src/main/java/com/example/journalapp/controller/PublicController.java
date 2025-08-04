@@ -17,8 +17,14 @@ import com.example.journalapp.service.UserDetailServiceImpl;
 import com.example.journalapp.service.UserService;
 import com.example.journalapp.utilis.JwtUtil;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/public")
+@Tag(name = "Public Controller", description = "APIs for public access, including health checks, user sign-up, and login.")
 public class PublicController {
     @Autowired
     UserDetailServiceImpl userDetailServiceImpl;
@@ -29,11 +35,19 @@ public class PublicController {
     @Autowired
     private JwtUtil jwtUtil;
     @GetMapping("/health-check")
+    @Operation(summary = "Check the health of the application")
+    @ApiResponse(responseCode = "200", description = "Application is running successfully")
     public String healthCheck(){
         return "ok";
     }
 
     @PostMapping("/sign-up")
+    @Operation(summary = "Register a new user account")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "User created successfully"),
+            @ApiResponse(responseCode = "409", description = "Username already exists"),
+            @ApiResponse(responseCode = "500", description = "Internal server error while creating user")
+    })
     public ResponseEntity<?> addNewUser(@RequestBody User newUser){
         if (userService.findByUsername(newUser.getUserName()) != null) {
             return new ResponseEntity<>("Username already exists.", HttpStatus.CONFLICT);
@@ -46,6 +60,11 @@ public class PublicController {
         }
     }
     @PostMapping("/login")
+    @Operation(summary = "Authenticate a user and receive a JWT")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login successful, JWT returned"),
+            @ApiResponse(responseCode = "401", description = "Invalid username or password")
+    })
     public ResponseEntity<?> login(@RequestBody User user){
         try {
              authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword()));

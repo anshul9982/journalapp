@@ -19,14 +19,22 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.journalapp.entity.JournalEntry;
 import com.example.journalapp.entity.Quotes;
 import com.example.journalapp.service.JournalEntryService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 @Slf4j
 @RestController
 @RequestMapping("/journal")
+@Tag(name = "Journal Entry Controller", description = "APIs for managing journal entries for the authenticated user.")
 public class JournalEntryController {
     @Autowired
     JournalEntryService journalEntryService;
 
     @GetMapping()
+    @Operation(summary = "Get all journal entries for the authenticated user")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Successfully retrieved list"), @ApiResponse(responseCode = "404", description = "No entries found") })
     public ResponseEntity<?> getAllEntriesOfUser() {
         try {
             List<JournalEntry> entries = journalEntryService.getAllEntriesForAuthenticatedUser();
@@ -38,6 +46,8 @@ public class JournalEntryController {
     }
 
     @PostMapping()
+    @Operation(summary = "Create a new journal entry for the authenticated user")
+    @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Journal entry created successfully"), @ApiResponse(responseCode = "400", description = "Bad request") })
     public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry myEntry) {
         try {
             JournalEntry createdEntry = journalEntryService.createEntryForAuthenticatedUser(myEntry);
@@ -49,6 +59,8 @@ public class JournalEntryController {
     }
 
     @GetMapping("/quote")
+    @Operation(summary = "Get a random quote")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Successfully retrieved a quote"), @ApiResponse(responseCode = "500", description = "Internal server error, could not fetch a quote") })
     public ResponseEntity<?> getQuote() {
         try {
             Quotes quote = journalEntryService.getRandomQuote();
@@ -60,6 +72,8 @@ public class JournalEntryController {
     }
 
     @GetMapping("id/{myId}")
+    @Operation(summary = "Get a specific journal entry by its ID")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Successfully retrieved the entry"), @ApiResponse(responseCode = "404", description = "Entry not found or does not belong to the user") })
     public ResponseEntity<JournalEntry> getJournalById(@PathVariable ObjectId myId) {
         try {
             JournalEntry entry = journalEntryService.getEntryByIdForAuthenticatedUser(myId);
@@ -71,6 +85,8 @@ public class JournalEntryController {
     }
 
     @DeleteMapping("id/{myId}")
+    @Operation(summary = "Delete a specific journal entry by its ID")
+    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Entry deleted successfully"), @ApiResponse(responseCode = "404", description = "Entry not found or does not belong to the user") })
     public ResponseEntity<?> deleteEntryById(@PathVariable ObjectId myId) {
         try {
             journalEntryService.deleteEntryByIdForAuthenticatedUser(myId);
@@ -82,6 +98,8 @@ public class JournalEntryController {
     }
 
     @PutMapping("id/{id}")
+    @Operation(summary = "Update a specific journal entry by its ID")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Entry updated successfully"), @ApiResponse(responseCode = "404", description = "Entry not found or does not belong to the user") })
     public ResponseEntity<?> updateEntry(@PathVariable ObjectId id, @RequestBody JournalEntry newEntry) {
         try {
             JournalEntry updatedEntry = journalEntryService.updateEntryForAuthenticatedUser(id, newEntry);

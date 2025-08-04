@@ -25,6 +25,13 @@ public class SpringSecurity{
     @Autowired
     private UserDetailServiceImpl userDetailsService;
 
+    // Whitelist for public Swagger endpoints
+    private static final String[] SWAGGER_WHITELIST = {
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+    };
+
 
     SpringSecurity(JwtFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
@@ -35,6 +42,7 @@ public class SpringSecurity{
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         return http.authorizeHttpRequests(request -> request
+                        .requestMatchers(SWAGGER_WHITELIST).permitAll()
                         .requestMatchers("/public/**").permitAll()
                         .requestMatchers("/journal/**", "/user/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
